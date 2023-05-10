@@ -29,12 +29,10 @@ const login = async (req, res) => {
           });
           return;
         }
-
-        //check the resut of password match route
+        //check the result of password match route
         if (!req.ourUser.passed) throw new Error("User data incorrect");
         console.log("user passed", req.url);
     
-        
         let message ="";
         let statusCode = 0;
         //one last check to see if we have just registered a new user before generating appropriate response
@@ -62,8 +60,22 @@ const login = async (req, res) => {
       }
 };
 
+const deleteUser = async (req, res) => {
+  try {
+    const result = await User.destroy({
+      where: {
+        username: req.body.username,
+      },
+    });
+    res.status(202).json({ message: "success", result });
+  } catch (error) {
+    res.status(501).json({ errorMessage: error.message, error: error });
+  }
+}; 
+
 module.exports = {
   registerUser,
   login,
+  deleteUser
 };
 
