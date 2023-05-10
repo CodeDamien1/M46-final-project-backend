@@ -84,9 +84,33 @@ const getAllUsers = async (req, res) => {
   } 
 };
 
+
+
+// JSON body ref for testing/front end setup of updateUser function - delete before production
+
+// {
+//   "username": "<enter a username>",
+//   "updatekey": "username",
+//   "updateValue": "<enter new email>"
+// }
+
+const updateUser = async (req, res) => {
+  try {
+    const updateResult = await User.update(
+      { [req.body.updateKey]: req.body.updateValue },
+      { where: { username: req.body.username } }
+    );
+
+    res.status(201).json({ message: "success", updateResult: updateResult });
+  } catch (error) {
+    res.status(501).json({ errorMessage: error.message, error: error });
+  }
+};
+
 module.exports = {
   registerUser,
   login,
   deleteUser,
   getAllUsers,
+  updateUser
 };
