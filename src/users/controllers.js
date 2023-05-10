@@ -84,13 +84,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// JSON body ref for testing/front end setup of updateUser function - delete before production
-
-// {
-//   "username": "<enter a username>",
-//   "updatekey": "username",
-//   "updateValue": "<enter new email>"
-// }
 
 const updateUser = async (req, res) => {
   try {
