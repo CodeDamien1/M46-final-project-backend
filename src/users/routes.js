@@ -15,7 +15,7 @@ userRouter.get("/users/getallusers", tokenCheck, getAllUsers)
 
 userRouter.delete("/users/deleteuser", tokenCheck, deleteUser)
 
-userRouter.put("/users/updateuser", updateUser);
+userRouter.put("/users/updateuser", tokenCheck, updateUser);
 
 
 
