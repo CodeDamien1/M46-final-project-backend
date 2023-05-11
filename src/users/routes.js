@@ -11,7 +11,7 @@ userRouter.post("/users/login", comparePass, login)
 
 userRouter.get("/users/authcheck", tokenCheck, login)
 
-userRouter.get("/users/getallusers", getAllUsers)
+userRouter.get("/users/getallusers", tokenCheck, getAllUsers)
 
 userRouter.delete("/users/deleteuser", deleteUser)
 
