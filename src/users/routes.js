@@ -13,7 +13,7 @@ userRouter.get("/users/authcheck", tokenCheck, login)
 
 userRouter.get("/users/getallusers", tokenCheck, getAllUsers)
 
-userRouter.delete("/users/deleteuser", deleteUser)
+userRouter.delete("/users/deleteuser", tokenCheck, deleteUser)
 
 userRouter.put("/users/updateuser", updateUser);
 
