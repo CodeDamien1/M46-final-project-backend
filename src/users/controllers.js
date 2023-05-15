@@ -75,9 +75,13 @@ const deleteUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ["username"],
-    });
+    const users = await User.findAll();
+
+    // remove passwords from users object
+    for (let user of users) {
+      user.password = "";
+    }
+
     res.status(201).json({ message: "success", users: users });
   } catch (error) {
     res.status(501).json({ errorMessage: "Validation error", error });
