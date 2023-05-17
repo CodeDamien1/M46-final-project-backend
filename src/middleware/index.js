@@ -29,7 +29,7 @@ const comparePass = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    res.status(501).json({ errorMessage: "compare fail", error: error });
+    res.status(501).json({ errorMessage: "User data incorrect", error: error });
   }
 };
 
