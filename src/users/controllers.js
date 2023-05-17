@@ -26,6 +26,7 @@ const login = async (req, res) => {
           id: req.authCheck.id,
           username: req.authCheck.username,
           token: req.header("Authorization").replace("Bearer ", ""),
+          locality: req.authCheck.locality,
         },
       });
       return;
@@ -52,6 +53,7 @@ const login = async (req, res) => {
         id: req.user.id,
         username: req.user.username,
         token: token,
+        locality: req.user.locality,
       },
     });
   } catch (error) {
@@ -59,6 +61,8 @@ const login = async (req, res) => {
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
+
 
 const deleteUser = async (req, res) => {
   try {
@@ -72,6 +76,8 @@ const deleteUser = async (req, res) => {
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
+
 
 const getAllUsers = async (req, res) => {
   try {

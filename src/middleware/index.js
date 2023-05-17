@@ -22,6 +22,7 @@ const comparePass = async (req, res, next) => {
         id: req.ourUser.id,
         username: req.ourUser.username,
         password: req.ourUser.password,
+        locality: req.ourUser.locality
       };
     }
 
@@ -56,7 +57,7 @@ const tokenCheck = async (req, res, next) => {
     const token = req.header("Authorization").replace("Bearer ", "");
     const newID = jwt.verify(token, process.env.SECRET_KEY);
     const newUser = await User.findOne({ where: { id: newID.id } });
-
+console.log(newUser)
     if (!newUser) {
       res.status(401).json({ errorMessage: "User not authorized" });
       return;
@@ -66,6 +67,7 @@ const tokenCheck = async (req, res, next) => {
       id: newUser.id,
       username: newUser.username,
       password: newUser.password,
+      locality: newUser.locality, 
     };
 
     next();
