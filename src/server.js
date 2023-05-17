@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 const syncTables = () => {
-  //force:true to update tables
+
   User.sync();
 };
 
