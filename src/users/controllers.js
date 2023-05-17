@@ -1,5 +1,7 @@
 const User = require("./model");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+// const { hashPass } = require("../middleware");
 
 const registerUser = async (req, res) => {
   try {
@@ -88,20 +90,47 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-
 const updateUser = async (req, res) => {
   try {
+    let updateValue = req.body.updateValue;
+    // Check if password update is requested
+    if (req.body.updateKey === "password") {
+      // Hash the new password
+      updateValue = await bcrypt.hash(
+        req.body.updateValue,
+        parseInt(process.env.SALT_ROUNDS)
+      );
+    }
     const updateResult = await User.update(
-      { [req.body.updateKey]: req.body.updateValue },
-
+      { [req.body.updateKey]: updateValue },
       { where: { username: req.body.username } }
     );
 
-    res.status(201).json({ message: "success", updateResult: updateResult });
+    res.status(201).json({ message: "success", updateResult });
   } catch (error) {
-    res.status(501).json({ errorMessage: error.message, error: error });
+    res.status(501).json({ errorMessage: error.message, error });
   }
 };
+// const updateUser = async (req, res) => {
+//   try {
+//       if (req.body.updateKey === "password") {
+//       const hashedPassword = await hashPass(req.body.updateValue);
+//       req.body.updateValue = req.body.password;
+//       }
+
+//     const updateResult = await User.update(
+//       { [req.body.updateKey]: req.body.updateValue },
+
+//       { where: { username: req.body.username } }
+//     );
+//     console.log("!!!!!!!!!!!!!!!!!")
+//     console.log(updateResult)
+
+//     res.status(201).json({ message: "success", updateResult: updateResult });
+//   } catch (error) {
+//     res.status(501).json({ errorMessage: error.message, error: error });
+//   }
+// };
 
 module.exports = {
   registerUser,
