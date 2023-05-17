@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 
 const comparePass = async (req, res, next) => {
   try {
-
     req.ourUser = await User.findOne({
       where: { userName: req.body.username },
     });
@@ -13,7 +12,6 @@ const comparePass = async (req, res, next) => {
       throw new Error("Credentials Incorrect");
     }
 
-
     req.ourUser.passed = await bcrypt.compare(
       req.body.password,
       req.ourUser.password
@@ -21,7 +19,7 @@ const comparePass = async (req, res, next) => {
 
     if (req.ourUser.passed) {
       req.user = {
-        id:req.ourUser.id,
+        id: req.ourUser.id,
         username: req.ourUser.username,
         password: req.ourUser.password,
       };
@@ -35,10 +33,8 @@ const comparePass = async (req, res, next) => {
 };
 
 const hashPass = async (req, res, next) => {
-  try {    
-
+  try {
     const saltRounds = process.env.SALT_ROUNDS;
-
 
     req.body.password = await bcrypt.hash(
       req.body.password,
@@ -52,21 +48,14 @@ const hashPass = async (req, res, next) => {
   }
 };
 
-
-
 const tokenCheck = async (req, res, next) => {
-  try {    
-
+  try {
     if (!req.header("Authorization")) {
       throw new Error("Missing Credentials");
     }
-
-
     const token = req.header("Authorization").replace("Bearer ", "");
-
     const newID = jwt.verify(token, process.env.SECRET_KEY);
-
-    const newUser = await User.findOne({ where: { id:newID.id } });
+    const newUser = await User.findOne({ where: { id: newID.id } });
 
     if (!newUser) {
       res.status(401).json({ errorMessage: "User not authorized" });
@@ -81,7 +70,7 @@ const tokenCheck = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error(error)
+    console.error(error);
 
     res.status(501).json({ errorMessage: "token fail", error: error });
   }
