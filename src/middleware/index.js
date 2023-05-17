@@ -66,6 +66,7 @@ const tokenCheck = async (req, res, next) => {
       id: newUser.id,
       username: newUser.username,
       password: newUser.password,
+      locality: newUser.locality, 
     };
 
     next();
