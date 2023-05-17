@@ -16,54 +16,9 @@ const registerUser = async (req, res) => {
   }
 };
 
-// const login = async (req, res) => {
-//   try {
-
-//     if (req.authCheck) {
-//       res.status(200).json({
-//         message: "Success",
-//         user: {
-//           id: req.authCheck.id,
-//           username: req.authCheck.username,
-//           token: req.header("Authorization").replace("Bearer ", ""),
-//           locality: req.user.locality,
-//         },
-//       });
-//       return;
-//     }
-
-//     if (!req.ourUser.passed) throw new Error("User data incorrect");
-
-//     let message = "";
-//     let statusCode = 0;
-
-//     if (req.url === "/users/register") {
-//       message = "User registered and logged in";
-//       statusCode = 201;
-//     } else {
-//       message = "User logged in";
-//       statusCode = 200;
-//     }
-
-//     const token = jwt.sign({ id: req.user.id }, process.env.SECRET_KEY);
-
-//     res.status(200).json({
-//       result: message,
-//       user: {
-//         id: req.user.id,
-//         username: req.user.username,
-//         token: token,
-//         locality: req.user.locality,
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(501).json({ errorMessage: error.message, error: error });
-//   }
-// };
-
 const login = async (req, res) => {
   try {
+
     if (req.authCheck) {
       res.status(200).json({
         message: "Success",
@@ -71,7 +26,7 @@ const login = async (req, res) => {
           id: req.authCheck.id,
           username: req.authCheck.username,
           token: req.header("Authorization").replace("Bearer ", ""),
-          locality: req.user.locality, // Access the locality value from req.authCheck instead of req.user
+          locality: req.authCheck.locality,
         },
       });
       return;
@@ -101,15 +56,12 @@ const login = async (req, res) => {
         locality: req.user.locality,
       },
     });
-    console.log(req.user);
-    console.log("^^^req.user");
-    console.log(req.user.locality);
-    console.log("^^^req.user.locality");
   } catch (error) {
     console.error(error);
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
 
 
 const deleteUser = async (req, res) => {
@@ -124,6 +76,8 @@ const deleteUser = async (req, res) => {
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
+
 
 const getAllUsers = async (req, res) => {
   try {
