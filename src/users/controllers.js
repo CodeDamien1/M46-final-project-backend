@@ -19,7 +19,6 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   try {
 
-    console.log("Authenticated user found");
     if (req.authCheck) {
       res.status(200).json({
         message: "Success",
@@ -33,7 +32,6 @@ const login = async (req, res) => {
     }
 
     if (!req.ourUser.passed) throw new Error("User data incorrect");
-    console.log("user passed", req.url);
 
     let message = "";
     let statusCode = 0;
@@ -78,7 +76,6 @@ const deleteUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
-
 
     for (let user of users) {
       user.password = "";
