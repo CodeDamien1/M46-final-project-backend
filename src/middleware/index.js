@@ -13,7 +13,7 @@ const comparePass = async (req, res, next) => {
       throw new Error("Credentials Incorrect");
     }
 
-    //use bcypt to compare the incomming password with the encrypted one stored in the database
+    //use bcrypt to compare the incoming password with the encrypted one stored in the database
     req.ourUser.passed = await bcrypt.compare(
       req.body.password,
       req.ourUser.password
@@ -30,7 +30,7 @@ const comparePass = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    res.status(501).json({ message: "failure", error: error });
+    res.status(501).json({ errorMessage: "compare fail", error: error });
   }
 };
 
@@ -49,7 +49,7 @@ const hashPass = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    res.status(501).json({ message: "failure", error: error });
+    res.status(501).json({ errorMessage: "hash fail", error: error });
   }
 };
 
@@ -72,7 +72,7 @@ const tokenCheck = async (req, res, next) => {
     const newUser = await User.findOne({ where: { id:newID.id } });
      //check if we found a user and return with response if not
     if (!newUser) {
-      res.status(401).json({ messge: "User not authorised" });
+      res.status(401).json({ errorMessage: "User not authorized" });
       return;
     }
     //prepare successful response
@@ -87,7 +87,7 @@ const tokenCheck = async (req, res, next) => {
   } catch (error) {
     console.error(error)
 
-    res.status(501).json({ message: "failure", error: error });
+    res.status(501).json({ errorMessage: "token fail", error: error });
   }
 };
 module.exports = {

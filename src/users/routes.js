@@ -19,6 +19,6 @@ userRouter.put("/users/updateuser", tokenCheck, updateUser);
 
 
 
-//TODO: add rest of routes for each controller
+
 
 module.exports = userRouter
