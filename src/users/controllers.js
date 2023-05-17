@@ -19,7 +19,6 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   try {
 
-    console.log("Authenticated user found");
     if (req.authCheck) {
       res.status(200).json({
         message: "Success",
@@ -27,13 +26,13 @@ const login = async (req, res) => {
           id: req.authCheck.id,
           username: req.authCheck.username,
           token: req.header("Authorization").replace("Bearer ", ""),
+          locality: req.authCheck.locality,
         },
       });
       return;
     }
 
     if (!req.ourUser.passed) throw new Error("User data incorrect");
-    console.log("user passed", req.url);
 
     let message = "";
     let statusCode = 0;
@@ -54,6 +53,7 @@ const login = async (req, res) => {
         id: req.user.id,
         username: req.user.username,
         token: token,
+        locality: req.user.locality,
       },
     });
   } catch (error) {
@@ -61,6 +61,8 @@ const login = async (req, res) => {
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
+
 
 const deleteUser = async (req, res) => {
   try {
@@ -75,10 +77,11 @@ const deleteUser = async (req, res) => {
   }
 };
 
+
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
-
 
     for (let user of users) {
       user.password = "";
