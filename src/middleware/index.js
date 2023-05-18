@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const comparePass = async (req, res, next) => {
   try {
     req.ourUser = await User.findOne({
-      where: { userName: req.body.username },
+      where: { username: req.body.username },
     });
 
     if (!req.ourUser) {
