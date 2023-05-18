@@ -1,5 +1,7 @@
 const User = require("./model");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
 
 const registerUser = async (req, res) => {
   try {
@@ -16,8 +18,7 @@ const registerUser = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    //check for authenticated token route
-    console.log("Authenticated user found");
+
     if (req.authCheck) {
       res.status(200).json({
         message: "Success",
@@ -25,17 +26,17 @@ const login = async (req, res) => {
           id: req.authCheck.id,
           username: req.authCheck.username,
           token: req.header("Authorization").replace("Bearer ", ""),
+          locality: req.authCheck.locality,
         },
       });
       return;
     }
-    //check the result of password match route
+
     if (!req.ourUser.passed) throw new Error("User data incorrect");
-    console.log("user passed", req.url);
 
     let message = "";
     let statusCode = 0;
-    //one last check to see if we have just registered a new user before generating appropriate response
+
     if (req.url === "/users/register") {
       message = "User registered and logged in";
       statusCode = 201;
@@ -43,15 +44,16 @@ const login = async (req, res) => {
       message = "User logged in";
       statusCode = 200;
     }
-    //generate a token for the persistance cookie
+
     const token = jwt.sign({ id: req.user.id }, process.env.SECRET_KEY);
-    //send response
+
     res.status(200).json({
       result: message,
       user: {
         id: req.user.id,
         username: req.user.username,
         token: token,
+        locality: req.user.locality,
       },
     });
   } catch (error) {
@@ -59,6 +61,8 @@ const login = async (req, res) => {
     res.status(501).json({ errorMessage: error.message, error: error });
   }
 };
+
+
 
 const deleteUser = async (req, res) => {
   try {
@@ -73,29 +77,41 @@ const deleteUser = async (req, res) => {
   }
 };
 
+
+
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ["username"],
-    });
+    const users = await User.findAll();
+
+    for (let user of users) {
+      user.password = "";
+    }
+
     res.status(201).json({ message: "success", users: users });
   } catch (error) {
     res.status(501).json({ errorMessage: "Validation error", error });
   }
 };
 
-
 const updateUser = async (req, res) => {
   try {
-    const updateResult = await User.update(
-      { [req.body.updateKey]: req.body.updateValue },
+    let updateValue = req.body.updateValue;
 
+    if (req.body.updateKey === "password") {
+
+      updateValue = await bcrypt.hash(
+        req.body.updateValue,
+        parseInt(process.env.SALT_ROUNDS)
+      );
+    }
+    const updateResult = await User.update(
+      { [req.body.updateKey]: updateValue },
       { where: { username: req.body.username } }
     );
 
-    res.status(201).json({ message: "success", updateResult: updateResult });
+    res.status(201).json({ message: "success", updateResult });
   } catch (error) {
-    res.status(501).json({ errorMessage: error.message, error: error });
+    res.status(501).json({ errorMessage: error.message, error });
   }
 };
 
